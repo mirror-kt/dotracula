@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: "Build ${{ matrix.target }}"
     strategy:
       matrix:
         include:
@@ -21,7 +22,6 @@ jobs:
             os: ubuntu-latest
           - target: aarch64-apple-darwin
             os: macos-latest
-            RUST_CONFIGURE_ARGS: "--build=x86_64-apple-darwin --host=aarch64-apple-darwin --target=aarch64-apple-darwin --enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
     env:
       CARGO_INCREMENTAL: 1
     runs-on: ${{ matrix.os }}
@@ -40,6 +40,11 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}-${{ matrix.target }}
       - name: Restore source codes' timestamps
         uses: chetan/git-restore-mtime-action@v1
+      - name: Set SDK for macOS aarch64
+        if: matrix.target == 'aarch64-apple-darwin'
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_12.4.app"
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
       - name: Setup rustup
         uses: actions-rs/toolchain@v1
         with:
@@ -50,8 +55,6 @@ jobs:
           override: true
       - name: Build
         uses: actions-rs/cargo@v1
-        env:
-          RUST_CONFIGURE_ARGS: ${{ matrix.RUST_CONFIGURE_ARGS }}
         with:
           use-cross: true
           command: build
