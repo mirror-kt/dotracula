@@ -21,8 +21,7 @@ jobs:
             os: ubuntu-latest
           - target: aarch64-apple-darwin
             os: macos-latest
-            env:
-              RUST_CONFIGURE_ARGS: "--build=x86_64-apple-darwin --host=aarch64-apple-darwin --target=aarch64-apple-darwin --enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
+            RUST_CONFIGURE_ARGS: "--build=x86_64-apple-darwin --host=aarch64-apple-darwin --target=aarch64-apple-darwin --enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
     env:
       CARGO_INCREMENTAL: 1
     runs-on: ${{ matrix.os }}
@@ -51,6 +50,8 @@ jobs:
           override: true
       - name: Build
         uses: actions-rs/cargo@v1
+        env:
+          RUST_CONFIGURE_ARGS: ${{ matrix.RUST_CONFIGURE_ARGS }}
         with:
           use-cross: true
           command: build
