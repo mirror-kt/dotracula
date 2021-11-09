@@ -36,11 +36,7 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}-${{ matrix.target }}
       - name: Restore source codes' timestamps
-        run: |
-          for file in $(find . -name "*.rs"); do
-            timestamp=`git log -1 --pretty=format:'%cd' --date=format:'%Y%m%d%H%M.%S' $file`
-            touch -t "$timestamp" $file
-          done
+        uses: chetan/git-restore-mtime-action@v1
       - name: Setup rustup
         uses: actions-rs/toolchain@v1
         with:
