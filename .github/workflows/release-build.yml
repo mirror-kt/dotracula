@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install gnu-tar
-        if: runner.os == "macOS"
+        if: runner.os == 'macos'
         run: |
           brew install gnu-tar
           echo "/usr/local/opt/gnu-tar/libexec/gnubin" >> $GITHUB_PATH
