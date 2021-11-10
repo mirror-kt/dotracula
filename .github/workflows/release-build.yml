@@ -50,7 +50,6 @@ jobs:
         with:
           profile: minimal
           toolchain: nightly
-          components: clippy, rustfmt
           target: ${{ matrix.target }}
           override: true
       - name: Build
